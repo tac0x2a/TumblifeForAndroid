@@ -290,8 +290,8 @@ public class TLDashboard implements TLDashboardInterface, Serializable
     HttpURLConnection con = null;
     try {
       HashMap<String, String> parameters = getAccountParameters();
-      parameters.put("start", String.valueOf(posts.size() + containsPostCount));
-      parameters.put("num", String.valueOf(LOAD_NUM));
+      parameters.put("offset", String.valueOf(posts.size() + containsPostCount));
+      parameters.put("limit", String.valueOf(LOAD_NUM));
       String type = setting.getDashboardType().getType();
       if (type != null) {
         parameters.put("type", type);
@@ -344,10 +344,10 @@ public class TLDashboard implements TLDashboardInterface, Serializable
     } catch (final ParseException e) {
         TLLog.e("TLDashboard / load", e);
         handler.post(new Runnable() { public void run(){ delegate.loadFailure(e); } });
-	} finally {
-      if (con != null) {
-        con.disconnect();
-      }
+	//} finally {
+      //if (con != null) {
+        //con.disconnect();
+      //}
     }
     return result;
   }
@@ -576,9 +576,9 @@ public class TLDashboard implements TLDashboardInterface, Serializable
     HttpURLConnection con = null;
     try {
       HashMap<String, String> parameters = getAccountParameters();
-      parameters.put("post-id", String.valueOf(post.getId()));
-      parameters.put("reblog-key", post.getReblogKey());
-      con = TLConnection.get(getTumblrUrl(LIKE_URL), parameters, TLConsumer.getSharedInstance().getConsumer(this.context));
+      parameters.put("id", String.valueOf(post.getId()));
+      parameters.put("reblog_key", post.getReblogKey());
+      con = TLConnection.post(getTumblrUrl(LIKE_URL), parameters, TLConsumer.getSharedInstance().getConsumer(this.context));
       TLLog.i("TLDashboard / like : ResnponseCode / " + String.valueOf(con.getResponseCode()));
       if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
         throw new TLAuthenticationFailureException();

@@ -39,7 +39,11 @@ public class TLPostParser extends TLParser
         post.setFormat((String)e.get("format"));
         post.setReblogKey((String)e.get("reblog_key"));
         post.setSlug("");
-        post.setNoteCount((Long)e.get("note_count"));
+        
+        Object obj = e.get("note_count");
+        if (obj != null) {
+        	post.setNoteCount((Long)obj);
+        }
         //post.setRebloggedFromUrl(parser.getAttributeValue(NAME_SPACE, "reblogged-from-url"));
         //post.setRebloggedFromName(parser.getAttributeValue(NAME_SPACE, "reblogged-from-name"));
         //post.setRebloggedFromTitle(parser.getAttributeValue(NAME_SPACE, "reblogged-from-title"));
@@ -53,7 +57,7 @@ public class TLPostParser extends TLParser
         JSONArray tags = (JSONArray)e.get("tags");
         String tagsString = new String("");
         for (int j = 0; j < tags.size(); j++) {
-        	tagsString = tagsString + tags.get(i);
+        	tagsString = tagsString + tags.get(j);
         	if (j + 1 < tags.size()) {
             	tagsString = tagsString + ",";
         	}
