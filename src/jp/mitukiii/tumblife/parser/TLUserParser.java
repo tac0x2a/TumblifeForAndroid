@@ -6,22 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 import jp.mitukiii.tumblife.model.TLTumblelog;
 import jp.mitukiii.tumblife.model.TLUser;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+
+import org.json.simple.parser.ParseException;
 
 public class TLUserParser extends TLParser
 {
   public TLUserParser(InputStream input)
-    throws XmlPullParserException
+    throws IOException, ParseException
   {
     super(input);
   }
 
   public TLUser parse()
-    throws XmlPullParserException, IOException
   {
     TLUser user = new TLUser();
     List<TLTumblelog> tumblelogs = new ArrayList<TLTumblelog>();
+    /*
     for (int e = parser.getEventType(); e != XmlPullParser.END_DOCUMENT; e = parser.next()) {
       if (e == XmlPullParser.START_TAG) {
         String tag = parser.getName();
@@ -43,6 +43,7 @@ public class TLUserParser extends TLParser
         }
       }
     }
+    */
     user.setTumblelogs(tumblelogs);
     return user;
   }

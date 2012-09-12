@@ -19,7 +19,7 @@ public class TLBrowser
 
     headers.put("Cookie", cookie);
 
-    con = TLConnection.request(_url, method, parameters, headers);
+    con = TLConnection.request(_url, method, parameters, headers, null);
 
     Map<String, List<String>> _headers = con.getHeaderFields(); 
     List<String> cookieValues = _headers.get("set-cookie");

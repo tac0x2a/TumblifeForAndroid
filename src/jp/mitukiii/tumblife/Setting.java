@@ -59,6 +59,9 @@ public class Setting extends PreferenceActivity
       startActivity(intent);
     } else if (getString(R.string.clearcache_key).equals(preference.getKey())) {
       clearCache();
+    } else if (getString(R.string.login_key).equals(preference.getKey())) {
+        Intent intent = new Intent(context, Login.class);
+        startActivity(intent);
     } else {
       togglePreference(preference);
     }

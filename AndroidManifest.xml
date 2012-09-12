@@ -21,5 +21,8 @@
     <activity android:name="jp.mitukiii.tumblife.HardkeySetting"
       android:label="@string/activity_hardkey_setting">
     </activity>
-  </application>
+    <activity android:name="jp.mitukiii.tumblife.Login"
+      android:label="@string/login_title">
+    </activity>
+    </application>
 </manifest> 

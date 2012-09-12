@@ -5,119 +5,156 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import jp.mitukiii.tumblife.model.TLPost;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 public class TLPostParser extends TLParser
 {
   public TLPostParser(InputStream input)
-    throws XmlPullParserException
+    throws IOException, ParseException
   {
     super(input);
   }
 
   public List<TLPost> parse()
-    throws NumberFormatException, XmlPullParserException, IOException
   {
     List<TLPost> posts = new ArrayList<TLPost>(50);
-    TLPost post = null;
-    for (int e = parser.getEventType(); e != XmlPullParser.END_DOCUMENT; e = parser.next()) {
-      String tag = parser.getName();
-      if (e == XmlPullParser.START_TAG) {
-        if ("post".equals(tag)) {
-          post = new TLPost();
-          post.setId(Long.valueOf(parser.getAttributeValue(NAME_SPACE, "id")));
-          post.setUrl(parser.getAttributeValue(NAME_SPACE, "url"));
-          post.setUrlWithSlug(parser.getAttributeValue(NAME_SPACE, "url-with-slug"));
-          post.setType(parser.getAttributeValue(NAME_SPACE, "type"));
-          post.setDateGmt(parser.getAttributeValue(NAME_SPACE, "date-gmt"));
-          post.setDate(parser.getAttributeValue(NAME_SPACE, "date"));
-          post.setUnixTimestamp(Integer.valueOf(parser.getAttributeValue(NAME_SPACE, "unix-timestamp")));
-          post.setFormat(parser.getAttributeValue(NAME_SPACE, "format"));
-          post.setReblogKey(parser.getAttributeValue(NAME_SPACE, "reblog-key"));
-          post.setSlug(parser.getAttributeValue(NAME_SPACE, "slug"));
-          String noteCount = parser.getAttributeValue(NAME_SPACE, "note-count");
-          if (noteCount == null || noteCount.length() == 0) {
-            post.setNoteCount(0);
-          } else {
-            post.setNoteCount(Integer.valueOf(noteCount));
-          }
-          post.setRebloggedFromUrl(parser.getAttributeValue(NAME_SPACE, "reblogged-from-url"));
-          post.setRebloggedFromName(parser.getAttributeValue(NAME_SPACE, "reblogged-from-name"));
-          post.setRebloggedFromTitle(parser.getAttributeValue(NAME_SPACE, "reblogged-from-title"));
-        } else if ("tumblelog".equals(tag)) {
-          post.setTumblelogTitle(parser.getAttributeValue(NAME_SPACE, "title"));
-          post.setTumblelogName(parser.getAttributeValue(NAME_SPACE, "name"));
-          post.setTumblelogUrl(parser.getAttributeValue(NAME_SPACE, "url"));
-          post.setTumblelogTimezone(parser.getAttributeValue(NAME_SPACE, "timezone"));
-        } else if ("tag".equals(tag)) {
-          post.setTag(parser.nextText());
-        } else if ("quote-text".equals(tag)) {
-          post.setQuoteText(parser.nextText());
-        } else if ("quote-source".equals(tag)) {
-          post.setQuoteSource(parser.nextText());
-        } else if ("photo-caption".equals(tag)) {
-          post.setPhotoCaption(parser.nextText());
-        } else if ("photo-link-url".equals(tag)) {
-          post.setPhotoLinkUrl(parser.nextText());
-        } else if ("photo-url".equals(tag)) {
-          String maxWidth = parser.getAttributeValue(NAME_SPACE, "max-width");
-          if ("1280".equals(maxWidth)) {
-            post.setPhotoUrlMaxWidth1280(parser.nextText());
-          } else if ("500".equals(maxWidth)) {
-            post.setPhotoUrlMaxWidth500(parser.nextText());
-          } else if ("400".equals(maxWidth)) {
-            post.setPhotoUrlMaxWidth400(parser.nextText());
-          } else if ("250".equals(maxWidth)) {
-            post.setPhotoUrlMaxWidth250(parser.nextText());
-          } else if ("100".equals(maxWidth)) {
-            post.setPhotoUrlMaxWidth100(parser.nextText());
-          } else if ("75".equals(maxWidth)) {
-            post.setPhotoUrlMaxWidth75(parser.nextText());
-          } 
-        } else if ("link-text".equals(tag)) {
-          post.setLinkText(parser.nextText());
-        } else if ("link-url".equals(tag)) {
-          post.setLinkUrl(parser.nextText());
-        } else if ("link-description".equals(tag)) {
-          post.setLinkDescription(parser.nextText());
-        } else if ("conversation-title".equals(tag)) {
-          post.setConversationTitle(parser.nextText());
-        } else if ("conversation-text".equals(tag)) {
-          post.setConversationText(parser.nextText());
-        } else if ("line".equals(tag)) {
-          String beforeText = post.getConversation();
-          if (beforeText == null) {
-            beforeText = "";
-          }
-          post.setConversation(beforeText + "<p>" + parser.getAttributeValue(NAME_SPACE, "label") + parser.nextText() + "</p>");
-        } else if ("video-caption".equals(tag)) {
-          post.setVideoCaption(parser.nextText());
-        } else if ("video-source".equals(tag)) {
-          try {
-            post.setVideoSource(parser.nextText());
-          } catch (XmlPullParserException exception) {
-            // Raise error if contains meta info of video by XML.
-          }
-        } else if ("video-player".equals(tag)) {
-          post.setVideoPlayer(parser.nextText());
-        } else if ("audio-caption".equals(tag)) {
-          post.setAudioCaption(parser.nextText());
-        } else if ("audio-player".equals(tag)) {
-          post.setAudioPlayer(parser.nextText());
-        } else if ("download-url".equals(tag)) {
-          post.setDownloadUrl(parser.nextText());
-        } else if ("regular-title".equals(tag)) {
-          post.setRegularTitle(parser.nextText());
-        } else if ("regular-body".equals(tag)) {
-          post.setRegularBody(parser.nextText());
+    
+    JSONObject response = (JSONObject)root.get("response");
+    JSONArray jsonPosts = (JSONArray)response.get("posts");
+    
+    for (int i = 0; i < jsonPosts.size(); i++) {
+    	JSONObject e = (JSONObject)jsonPosts.get(i);
+    	
+    	TLPost post = new TLPost();
+        post.setId((Long)e.get("id"));
+        post.setUrl((String)e.get("post_url"));
+        post.setUrlWithSlug((String)e.get("post_url"));
+        post.setType((String)e.get("type"));
+        post.setDateGmt((String)e.get("date"));
+        post.setDate((String)e.get("date"));
+        post.setUnixTimestamp((Long)e.get("timestamp"));
+        post.setFormat((String)e.get("format"));
+        post.setReblogKey((String)e.get("reblog_key"));
+        post.setSlug("");
+        post.setNoteCount((Long)e.get("note_count"));
+        //post.setRebloggedFromUrl(parser.getAttributeValue(NAME_SPACE, "reblogged-from-url"));
+        //post.setRebloggedFromName(parser.getAttributeValue(NAME_SPACE, "reblogged-from-name"));
+        //post.setRebloggedFromTitle(parser.getAttributeValue(NAME_SPACE, "reblogged-from-title"));
+        
+        //JSONObject b = (JSONObject)e.get("blog");
+        post.setTumblelogTitle((String)e.get("blog_name"));
+        //post.setTumblelogName((String)b.get("name"));
+        //post.setTumblelogUrl((String)b.get("url"));
+        //post.setTumblelogTimezone(parser.getAttributeValue(NAME_SPACE, "timezone"));
+        
+        JSONArray tags = (JSONArray)e.get("tags");
+        String tagsString = new String("");
+        for (int j = 0; j < tags.size(); j++) {
+        	tagsString = tagsString + tags.get(i);
+        	if (j + 1 < tags.size()) {
+            	tagsString = tagsString + ",";
+        	}
         }
-      } else if (e == XmlPullParser.END_TAG) {
-        if ("post".equals(tag)) {
-          posts.add(post);
+        post.setTag(tagsString);
+        
+        if (post.getType().equals("quote")) {
+        	post.setQuoteText((String)e.get("text"));
+        	post.setQuoteSource((String)e.get("source"));
         }
-      }
+        
+        if (post.getType().equals("photo")) {
+            post.setPhotoCaption((String)e.get("caption"));
+            post.setPhotoLinkUrl((String)e.get("link_url"));
+            JSONArray photos = (JSONArray)e.get("photos");
+            JSONArray sizes = (JSONArray)((JSONObject)photos.get(0)).get("alt_sizes");
+            for (int j = 0; j < sizes.size(); j++) {
+            	JSONObject s = (JSONObject)sizes.get(j);
+                Long maxWidth = (Long)s.get("width");
+                if (1280 == maxWidth) {
+                  post.setPhotoUrlMaxWidth1280((String)s.get("url"));
+                } else if (500 == maxWidth) {
+                  post.setPhotoUrlMaxWidth500((String)s.get("url"));
+                } else if (400 == maxWidth) {
+                  post.setPhotoUrlMaxWidth400((String)s.get("url"));
+                } else if (250 == maxWidth) {
+                  post.setPhotoUrlMaxWidth250((String)s.get("url"));
+                } else if (100 == maxWidth) {
+                  post.setPhotoUrlMaxWidth100((String)s.get("url"));
+                } else if (75 == maxWidth) {
+                  post.setPhotoUrlMaxWidth75((String)s.get("url"));
+                } 
+            }
+        }
+        if (post.getPhotoUrlMaxWidth100() == null) {
+        	post.setPhotoUrlMaxWidth100(post.getPhotoUrlMaxWidth75());
+        }
+        if (post.getPhotoUrlMaxWidth250() == null) {
+        	post.setPhotoUrlMaxWidth250(post.getPhotoUrlMaxWidth100());
+        }
+        if (post.getPhotoUrlMaxWidth400() == null) {
+        	post.setPhotoUrlMaxWidth400(post.getPhotoUrlMaxWidth250());
+        }
+        if (post.getPhotoUrlMaxWidth500() == null) {
+        	post.setPhotoUrlMaxWidth500(post.getPhotoUrlMaxWidth400());
+        }
+        if (post.getPhotoUrlMaxWidth1280() == null) {
+        	post.setPhotoUrlMaxWidth1280(post.getPhotoUrlMaxWidth500());
+        }
+        
+        if (post.getType().equals("link")) {
+        	post.setLinkText((String)e.get("title"));
+        	post.setLinkUrl((String)e.get("url"));
+        	post.setLinkDescription((String)e.get("description"));
+        }
+        
+        if (post.getType().equals("chat")) {
+        	// TODO:
+        	/*
+        	post.setConversationTitle(parser.nextText());
+        	post.setConversationText(parser.nextText());
+        	String beforeText = post.getConversation();
+        	if (beforeText == null) {
+        		beforeText = "";
+        	}
+        	post.setConversation(beforeText + "<p>" + parser.getAttributeValue(NAME_SPACE, "label") + parser.nextText() + "</p>");
+        	*/
+        }
+        
+        if (post.getType().equals("video")) {
+        	// TODO:
+        	/*
+       		post.setVideoCaption(parser.nextText());
+        try {
+          post.setVideoSource(parser.nextText());
+        } catch (XmlPullParserException exception) {
+          // Raise error if contains meta info of video by XML.
+        }
+        post.setVideoPlayer(parser.nextText());
+        	 */
+        }
+
+        if (post.getType().equals("audio")) {
+        	// TODO:
+        	/*
+        post.setAudioCaption(parser.nextText());
+        post.setAudioPlayer(parser.nextText());
+        	 */
+        }
+        
+        // what?
+        // post.setDownloadUrl(parser.nextText());
+        
+        if (post.getType().equals("text")) {
+        	post.setRegularTitle((String)e.get("title"));
+        	post.setRegularBody((String)e.get("body"));
+        }
+
+        posts.add(post);
     }
+    
     return posts;
   }
 

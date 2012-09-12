@@ -10,12 +10,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+
 public class TLConnection
 {
   public static String POST = "POST";
   public static String GET  = "GET";
 
-  public static HttpURLConnection request(String _url, String method, Map<String, String> parameters, Map<String, String> headers)
+  public static HttpURLConnection request(String _url, String method, Map<String, String> parameters, Map<String, String> headers, OAuthConsumer consumer)
     throws MalformedURLException, IOException
   {
     TLLog.i("TLConnection / request : url / " + _url);
@@ -58,6 +63,21 @@ public class TLConnection
         con.setRequestProperty(field, value);
       }
 
+      if (consumer != null) {
+    	  try {
+			consumer.sign(con);
+		} catch (OAuthMessageSignerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OAuthCommunicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+      }
+      
       con.connect();
 
       return con;
@@ -72,51 +92,51 @@ public class TLConnection
     }
   }
 
-  public static HttpURLConnection request(String _url, String method, Map<String, String> parameters)
+  public static HttpURLConnection request(String _url, String method, Map<String, String> parameters, OAuthConsumer consumer)
     throws MalformedURLException, IOException
   {
-    return request(_url, method, parameters, new HashMap<String, String>());
+    return request(_url, method, parameters, new HashMap<String, String>(), consumer);
   }
 
-  public static HttpURLConnection request(String _url, String method)
+  public static HttpURLConnection request(String _url, String method, OAuthConsumer consumer)
     throws MalformedURLException, IOException
   {
-    return request(_url, method, new HashMap<String, String>(), new HashMap<String, String>());
+    return request(_url, method, new HashMap<String, String>(), new HashMap<String, String>(), consumer);
   }
 
-  public static HttpURLConnection post(String _url, Map<String, String> parameters, Map<String, String> headers)
+  public static HttpURLConnection post(String _url, Map<String, String> parameters, Map<String, String> headers, OAuthConsumer consumer)
     throws MalformedURLException, IOException
   {
-    return request(_url, POST, parameters, headers);
+    return request(_url, POST, parameters, headers, consumer);
   }
 
-  public static HttpURLConnection post(String _url, Map<String, String> parameters)
+  public static HttpURLConnection post(String _url, Map<String, String> parameters, OAuthConsumer consumer)
     throws MalformedURLException, IOException
   {
-    return request(_url, POST, parameters, new HashMap<String, String>());
+    return request(_url, POST, parameters, new HashMap<String, String>(), consumer);
   }
 
-  public static HttpURLConnection post(String _url)
+  public static HttpURLConnection post(String _url, OAuthConsumer consumer)
     throws MalformedURLException, IOException
   {
-    return request(_url, POST, new HashMap<String, String>(), new HashMap<String, String>());
+    return request(_url, POST, new HashMap<String, String>(), new HashMap<String, String>(), consumer);
   }
 
-  public static HttpURLConnection get(String _url, Map<String, String> parameters, Map<String, String> headers)
+  public static HttpURLConnection get(String _url, Map<String, String> parameters, Map<String, String> headers, OAuthConsumer consumer)
     throws MalformedURLException, IOException
   {
-    return request(_url, GET, parameters, headers);
+    return request(_url, GET, parameters, headers, consumer);
   }
 
-  public static HttpURLConnection get(String _url, Map<String, String> parameters)
+  public static HttpURLConnection get(String _url, Map<String, String> parameters, OAuthConsumer consumer)
     throws MalformedURLException, IOException
   {
-    return request(_url, GET, parameters, new HashMap<String, String>());
+    return request(_url, GET, parameters, new HashMap<String, String>(), consumer);
   }
 
-  public static HttpURLConnection get(String _url)
+  public static HttpURLConnection get(String _url, OAuthConsumer consumer)
     throws MalformedURLException, IOException
   {
-    return request(_url, GET, new HashMap<String, String>(), new HashMap<String, String>());
+    return request(_url, GET, new HashMap<String, String>(), new HashMap<String, String>(), consumer);
   }
 }

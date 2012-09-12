@@ -643,8 +643,8 @@ public class Main extends Activity implements TLDashboardDelegate, TLWebViewClie
 
   protected void start()
   {
-    if (setting.getEmail().length() == 0 ||
-        setting.getPassword().length() == 0)
+    if (setting.getToken().length() == 0 ||
+        setting.getTokenSecret().length() == 0)
     {
       TLLog.i("Main / start : No account.");
       noAccount();

@@ -257,5 +257,10 @@
 
     <string name="hardkey_setting_pinbutton_key">pinbutton</string>
     <string name="hardkey_setting_pinbutton_title">Pin Button</string>
-
+    
+    
+    <string name="login_title">Login</string>
+    <string name="login_key">login</string>
+    <string name="setting_token_key">token</string>
+    <string name="setting_token_secret_key">token_secret</string>
 </resources>

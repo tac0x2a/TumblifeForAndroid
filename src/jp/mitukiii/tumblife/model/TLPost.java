@@ -22,11 +22,11 @@ public class TLPost extends TLModel implements Serializable
   protected String           type;
   protected String           dateGmt;
   protected String           date;
-  protected int              unixTimestamp;
+  protected long             unixTimestamp;
   protected String           format;
   protected String           reblogKey;
   protected String           slug;
-  protected int              noteCount;
+  protected long             noteCount;
   protected String           rebloggedFromUrl;
   protected String           rebloggedFromName;
   protected String           rebloggedFromTitle;
@@ -129,14 +129,14 @@ public class TLPost extends TLModel implements Serializable
     this.date = date;
   }
 
-  public int getUnixTimestamp()
+  public long getUnixTimestamp()
   {
     return unixTimestamp;
   }
 
-  public void setUnixTimestamp(int unixTimestamp)
+  public void setUnixTimestamp(Long long1)
   {
-    this.unixTimestamp = unixTimestamp;
+    this.unixTimestamp = long1;
   }
 
   public String getFormat()
@@ -169,12 +169,12 @@ public class TLPost extends TLModel implements Serializable
     this.slug = slug;
   }
 
-  public int getNoteCount()
+  public long getNoteCount()
   {
     return noteCount;
   }
 
-  public void setNoteCount(int noteCount)
+  public void setNoteCount(long noteCount)
   {
     this.noteCount = noteCount;
   }

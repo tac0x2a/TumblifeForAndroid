@@ -119,4 +119,6 @@
   <!-- Hardkey Setting Activity -->
     <string name="hardkey_setting_hidebuttonbar_title">ボタンを隠す</string>
 
+    <string name="login_title">ログイン</string>
+    
 </resources>

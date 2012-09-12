@@ -5,15 +5,14 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.xmlpull.v1.XmlPullParserException;
+
+import org.json.simple.parser.ParseException;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -22,13 +21,13 @@ import jp.mitukiii.tumblife.R;
 import jp.mitukiii.tumblife.exeption.TLAuthenticationFailureException;
 import jp.mitukiii.tumblife.exeption.TLParserException;
 import jp.mitukiii.tumblife.exeption.TLSDCardNotFoundException;
+import jp.mitukiii.tumblife.model.TLConsumer;
 import jp.mitukiii.tumblife.model.TLPost;
 import jp.mitukiii.tumblife.model.TLSetting;
 import jp.mitukiii.tumblife.model.TLTumblelog;
 import jp.mitukiii.tumblife.model.TLUser;
 import jp.mitukiii.tumblife.model.TLSetting.DASHBOARD_TYPE;
 import jp.mitukiii.tumblife.parser.TLPostParser;
-import jp.mitukiii.tumblife.parser.TLUserParser;
 import jp.mitukiii.tumblife.util.TLConnection;
 import jp.mitukiii.tumblife.util.TLExplorer;
 import jp.mitukiii.tumblife.util.TLLog;
@@ -69,10 +68,10 @@ public class TLDashboard implements TLDashboardInterface, Serializable
 
   protected static final String           HTTP_SCHEME       = "http://";
   protected static final String           HTTPS_SCHEME      = "https://";
-  protected static final String           TUMBLR_URL        = "www.tumblr.com";
-  protected static final String           AUTH_URL          = "/api/authenticate";
-  protected static final String           DASHBOARD_URL     = "/api/dashboard";
-  protected static final String           LIKE_URL          = "/api/like";
+  protected static final String           TUMBLR_URL        = "api.tumblr.com";
+  //protected static final String           AUTH_URL          = "/api/authenticate";
+  protected static final String           DASHBOARD_URL     = "/v2/user/dashboard";
+  protected static final String           LIKE_URL          = "/v2/user/like";
   protected static final String           REBLOG_URL        = "/api/reblog";
   protected static final String           WRITE_URL         = "/api/write";
 
@@ -241,7 +240,10 @@ public class TLDashboard implements TLDashboardInterface, Serializable
   protected boolean login()
   {
     TLLog.i("TLDashboard / login");
+    isLogged = true;
+    return isLogged;
 
+    /*
     if (isLogged) {
       return isLogged;
     }
@@ -249,7 +251,7 @@ public class TLDashboard implements TLDashboardInterface, Serializable
     isLogged = false;
     HttpURLConnection con = null;
     try {
-      con = TLConnection.post(getTumblrUrl(AUTH_URL), getAccountParameters());
+      con = TLConnection.post(getTumblrUrl(AUTH_URL), getAccountParameters(), TLConsumer.getSharedInstance().getConsumer(this.context));
       TLLog.i("TLDashboard / login : ResnponseCode / " + String.valueOf(con.getResponseCode()));
       if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
         throw new TLAuthenticationFailureException();
@@ -276,6 +278,7 @@ public class TLDashboard implements TLDashboardInterface, Serializable
       }
     }
     return isLogged;
+    */
   }
 
   protected boolean load()
@@ -293,7 +296,7 @@ public class TLDashboard implements TLDashboardInterface, Serializable
       if (type != null) {
         parameters.put("type", type);
       }
-      con = TLConnection.get(getTumblrUrl(DASHBOARD_URL), parameters);
+      con = TLConnection.get(getTumblrUrl(DASHBOARD_URL), parameters, TLConsumer.getSharedInstance().getConsumer(this.context));
       TLLog.i("TLDashboard / load : ResnponseCode / " + String.valueOf(con.getResponseCode()));
       if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
         throw new TLAuthenticationFailureException();
@@ -335,13 +338,13 @@ public class TLDashboard implements TLDashboardInterface, Serializable
       handler.post(new Runnable() { public void run(){ delegate.loadSuccess(); } });
     } catch (TLSDCardNotFoundException e) {
       throw e;
-    } catch (final XmlPullParserException e) {
-      TLLog.e("TLDashboard / load", e);
-      handler.post(new Runnable() { public void run(){ delegate.loadFailure(e); } });
     } catch (final IOException e) {
       TLLog.e("TLDashboard / load", e);
       handler.post(new Runnable() { public void run(){ delegate.loadFailure(e); } });
-    } finally {
+    } catch (final ParseException e) {
+        TLLog.e("TLDashboard / load", e);
+        handler.post(new Runnable() { public void run(){ delegate.loadFailure(e); } });
+	} finally {
       if (con != null) {
         con.disconnect();
       }
@@ -575,7 +578,7 @@ public class TLDashboard implements TLDashboardInterface, Serializable
       HashMap<String, String> parameters = getAccountParameters();
       parameters.put("post-id", String.valueOf(post.getId()));
       parameters.put("reblog-key", post.getReblogKey());
-      con = TLConnection.get(getTumblrUrl(LIKE_URL), parameters);
+      con = TLConnection.get(getTumblrUrl(LIKE_URL), parameters, TLConsumer.getSharedInstance().getConsumer(this.context));
       TLLog.i("TLDashboard / like : ResnponseCode / " + String.valueOf(con.getResponseCode()));
       if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
         throw new TLAuthenticationFailureException();
@@ -662,7 +665,7 @@ public class TLDashboard implements TLDashboardInterface, Serializable
       if (comment != null && comment.length() > 0) {
         parameters.put("comment", comment);
       }
-      con = TLConnection.post(getTumblrUrl(REBLOG_URL), parameters);
+      con = TLConnection.post(getTumblrUrl(REBLOG_URL), parameters, TLConsumer.getSharedInstance().getConsumer(this.context));
       TLLog.i("TLDashboard / reblog : ResnponseCode / " + String.valueOf(con.getResponseCode()));
       if (con.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
         throw new TLAuthenticationFailureException();
@@ -736,6 +739,7 @@ public class TLDashboard implements TLDashboardInterface, Serializable
 
     TLLog.d("TLDashboard / writeRegular : title / " + title + " : body / " + body);
 
+    final Context ctx = this.context;
     new Thread() {
       public void run() {
         HttpURLConnection con = null;
@@ -749,7 +753,7 @@ public class TLDashboard implements TLDashboardInterface, Serializable
           if (body != null) {
             parameters.put("bodt", body);
           }
-          con = TLConnection.get(getTumblrUrl(WRITE_URL), parameters);
+          con = TLConnection.get(getTumblrUrl(WRITE_URL), parameters, TLConsumer.getSharedInstance().getConsumer(ctx));
           TLLog.i("TLDashboard / writeRegular : ResnponseCode / " + String.valueOf(con.getResponseCode()));
           if (con.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
             throw new TLAuthenticationFailureException();
@@ -856,8 +860,6 @@ public class TLDashboard implements TLDashboardInterface, Serializable
   protected HashMap<String, String> getAccountParameters()
   {
     HashMap<String, String> parameters = new HashMap<String, String>();
-    parameters.put("email", setting.getEmail());
-    parameters.put("password", setting.getPassword());
     return parameters;
   }
 }

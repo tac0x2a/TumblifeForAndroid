@@ -182,7 +182,7 @@ public class TLExplorer
     InputStream input = null;
     FileOutputStream fileOutput = null;
     try {
-      con = TLConnection.get(urlString);
+      con = TLConnection.get(urlString, null);
       input = new BufferedInputStream(con.getInputStream(), IO_BUFFER_SIZE);
       fileOutput = new FileOutputStream(filePath, false);
       byte[] b = new byte[IO_BUFFER_SIZE];
@@ -238,7 +238,7 @@ public class TLExplorer
     FileOutputStream fileOutput = null;
     BufferedOutputStream output = null;
     try {
-      con = TLConnection.get(urlString);
+      con = TLConnection.get(urlString, null);
       input = new BufferedInputStream(con.getInputStream(), IO_BUFFER_SIZE);
       ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
       output = new BufferedOutputStream(dataStream, IO_BUFFER_SIZE);

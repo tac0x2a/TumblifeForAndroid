@@ -2,15 +2,10 @@
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
   <PreferenceCategory android:title="@string/setting_title_account">
-    <EditTextPreference
-      android:key="@string/setting_email_key"
-      android:title="@string/setting_email_title"
-      android:dialogTitle="@string/setting_email_title" />
-    <EditTextPreference
-      android:key="@string/setting_password_key"
-      android:title="@string/setting_password_title"
-      android:dialogTitle="@string/setting_password_title"
-      android:password="true" />
+    <PreferenceScreen
+      android:key="@string/login_key"
+      android:title="@string/login_title"
+      android:summary="" />
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/setting_title_setting">
     <CheckBoxPreference

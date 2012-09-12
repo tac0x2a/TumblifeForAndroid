@@ -68,8 +68,8 @@ public class TLSetting extends TLModel
 
   protected static TLSetting settingManager;
 
-  protected String           email;
-  protected String           password;
+  protected String           token;
+  protected String           tokenSecret;
   protected long             lastPostId;
 
   protected boolean          useSsl;
@@ -111,12 +111,12 @@ public class TLSetting extends TLModel
   {
     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-    email = preferences.getString(
-        context.getString(R.string.setting_email_key),
+    token = preferences.getString(
+        context.getString(R.string.setting_token_key),
         "");
 
-    password = preferences.getString(
-        context.getString(R.string.setting_password_key),
+    tokenSecret = preferences.getString(
+        context.getString(R.string.setting_token_secret_key),
         "");
 
     lastPostId = preferences.getLong(
@@ -208,14 +208,22 @@ public class TLSetting extends TLModel
         KeyEvent.KEYCODE_UNKNOWN);
   }
 
-  public String getEmail()
+  public String getToken()
   {
-    return email;
+    return token;
   }
 
-  public String getPassword()
+  public String getTokenSecret()
   {
-    return password;
+    return tokenSecret;
+  }
+  
+  public boolean setToken(Context context, String token, String secret) {
+	    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+	    Editor editor = preferences.edit();
+	    editor.putString(context.getString(R.string.setting_token_key), token);
+	    editor.putString(context.getString(R.string.setting_token_secret_key), secret);
+	    return editor.commit();
   }
 
   public long getLastPostId()

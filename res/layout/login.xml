@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+        android:scrollbarStyle="outsideInset">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent">
+            
+            <!-- mail -->
+            <TextView
+            	android:id="@+id/username_title"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:text="@string/setting_email_title" />
+            <EditText
+                android:id="@+id/username_edit"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:inputType="textEmailAddress" />
+            
+			<!-- pass -->
+            <TextView
+            	android:id="@+id/password_title"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:text="@string/setting_password_title" />
+            <EditText
+                android:id="@+id/password_edit"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:inputType="textPassword" />
+            
+			<!-- Button -->
+            <LinearLayout
+                android:layout_height="0dp"
+                android:layout_width="fill_parent"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/regist_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/login_title" />
+			</LinearLayout>
+		</LinearLayout>
+  	</ScrollView>
+</LinearLayout>
+    

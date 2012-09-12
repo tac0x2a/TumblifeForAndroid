@@ -24,24 +24,30 @@ public final class R {
         public static final int pin=0x7f020002;
     }
     public static final class id {
-        public static final int main_menu_about=0x7f060008;
-        public static final int main_menu_exit=0x7f06000b;
-        public static final int main_menu_moveto=0x7f06000a;
-        public static final int main_menu_reload=0x7f060009;
-        public static final int main_menu_setting=0x7f060007;
-        public static final int tumblr_button_back=0x7f060004;
-        public static final int tumblr_button_like=0x7f060002;
-        public static final int tumblr_button_next=0x7f060005;
-        public static final int tumblr_button_pin=0x7f060006;
-        public static final int tumblr_button_reblog=0x7f060003;
-        public static final int tumblr_buttons=0x7f060001;
-        public static final int web_view=0x7f060000;
+        public static final int main_menu_about=0x7f06000d;
+        public static final int main_menu_exit=0x7f060010;
+        public static final int main_menu_moveto=0x7f06000f;
+        public static final int main_menu_reload=0x7f06000e;
+        public static final int main_menu_setting=0x7f06000c;
+        public static final int password_edit=0x7f060003;
+        public static final int password_title=0x7f060002;
+        public static final int regist_button=0x7f060004;
+        public static final int tumblr_button_back=0x7f060009;
+        public static final int tumblr_button_like=0x7f060007;
+        public static final int tumblr_button_next=0x7f06000a;
+        public static final int tumblr_button_pin=0x7f06000b;
+        public static final int tumblr_button_reblog=0x7f060008;
+        public static final int tumblr_buttons=0x7f060006;
+        public static final int username_edit=0x7f060001;
+        public static final int username_title=0x7f060000;
+        public static final int web_view=0x7f060005;
     }
     public static final class layout {
         public static final int hardkey_setting=0x7f030000;
-        public static final int main=0x7f030001;
-        public static final int main_menu=0x7f030002;
-        public static final int setting=0x7f030003;
+        public static final int login=0x7f030001;
+        public static final int main=0x7f030002;
+        public static final int main_menu=0x7f030003;
+        public static final int setting=0x7f030004;
     }
     public static final class string {
         public static final int about_filepath=0x7f04004b;
@@ -118,9 +124,11 @@ public final class R {
         public static final int login=0x7f040012;
         public static final int login_failure_message=0x7f040038;
         public static final int login_failure_title=0x7f040037;
+        public static final int login_key=0x7f040097;
         public static final int login_no_account_message=0x7f040036;
         public static final int login_no_account_title=0x7f040035;
         public static final int login_success=0x7f040013;
+        public static final int login_title=0x7f040096;
         public static final int main_menu_about=0x7f04000e;
         public static final int main_menu_exit=0x7f04000a;
         public static final int main_menu_moveto=0x7f04000c;
@@ -204,6 +212,8 @@ public final class R {
          */
         public static final int setting_title_account=0x7f04004c;
         public static final int setting_title_setting=0x7f04004d;
+        public static final int setting_token_key=0x7f040098;
+        public static final int setting_token_secret_key=0x7f040099;
         public static final int setting_usepin_default=0x7f04005e;
         public static final int setting_usepin_key=0x7f04005b;
         public static final int setting_usepin_summary=0x7f04005d;
