@@ -93,7 +93,7 @@
     <string name="login_failure_message">Show setting?</string>
 
     <string name="load_error_title">Error occurred.</string>
-    <string name="load_error_message">Error occurred in Tumbler, or no network connection. Failed to load 10 times, therefore stop load of dashbord. Do you reload?</string>    
+    <string name="load_error_message">Error occurred in Tumbler, or no network connection. Failed to load 10 times, therefore stop load of dashbord. Do you reload?</string>
 
     <string name="moveto_title">Move To</string>
     <string-array name="moveto_items">
@@ -257,10 +257,11 @@
 
     <string name="hardkey_setting_pinbutton_key">pinbutton</string>
     <string name="hardkey_setting_pinbutton_title">Pin Button</string>
-    
-    
+
+
     <string name="login_title">Login</string>
     <string name="login_key">login</string>
     <string name="setting_token_key">token</string>
     <string name="setting_token_secret_key">token_secret</string>
+    <string name="setting_reblog_blog_key">reblogblog</string>
 </resources>

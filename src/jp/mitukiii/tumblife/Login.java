@@ -5,7 +5,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -21,16 +24,27 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.ParseException;
 
+import jp.mitukiii.tumblife.exeption.TLAuthenticationFailureException;
 import jp.mitukiii.tumblife.model.TLConsumer;
 import jp.mitukiii.tumblife.model.TLSetting;
+import jp.mitukiii.tumblife.tumblr.TLDashboard;
+import jp.mitukiii.tumblife.util.TLConnection;
+import jp.mitukiii.tumblife.util.TLLog;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -43,7 +57,7 @@ public class Login extends Activity {
 	    super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.login);
-		
+
 		((Button) findViewById(R.id.regist_button)).setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -51,7 +65,7 @@ public class Login extends Activity {
 			}
 		});
 	  }
-	  
+
 	  protected void login()
 	  {
 	    final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -70,12 +84,44 @@ public class Login extends Activity {
 	    	  boolean b = false;
 	    	  String res[] = doLogin(username, password);
 	    	  if (res != null) {
-	    		  b = TLSetting.getSharedInstance(context).setToken(context, res[0], res[1]);
+	    		  TLSetting setting = TLSetting.getSharedInstance(context);
+	    		  b = setting.setToken(context, res[0], res[1]);
+	    		  if (setting.getReblogBlog().equals("")) {
+	    			  String userinfo_url = "https'//api.tumblr.com/v2/user/info";
+	    			  HttpURLConnection con = null;
+	    			  try {
+	    				  HashMap<String, String> parameters = new HashMap<String, String>();
+	    				  con = TLConnection.post(userinfo_url, parameters, TLConsumer.getSharedInstance().getConsumer(context));
+	    				  if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
+	    					  throw new TLAuthenticationFailureException();
+	    				  }
+	    				  JSONObject  obj = (JSONObject) JSONValue.parseWithException(new InputStreamReader(con.getInputStream()));
+	    				  JSONArray blogs = (JSONArray)((JSONObject)((JSONObject) obj.get("response")).get("user")).get("blogs");
+	    				  for (int i = 0; i < blogs.size(); i++) {
+	    					  JSONObject blog = (JSONObject) blogs.get(i);
+	    					  if ((Boolean)blog.get("primary")) {
+	    						  setting.saveReblogBlog(context, (String)blog.get("name"));
+	    					  }
+	    				  }
+	    			  } catch (ParseException e) {
+	    				  TLLog.e("Login / get user info", e);
+	    			  } catch (MalformedURLException e) {
+	    				  // TODO 自動生成された catch ブロック
+	    				  e.printStackTrace();
+	    			  } catch (IOException e) {
+	    				  // TODO 自動生成された catch ブロック
+	    				  e.printStackTrace();
+	    			  } finally {
+	    				  if (con != null) {
+	    					  con.disconnect();
+	    				  }
+	    			  }
+	    		  }
 	    	  } else {
 	    		  b = false;
 	    	  }
 	    	  final boolean result = b;
-	    	  
+
 	        handler.post(new Runnable() {
 	          public void run() {
 	            progressDialog.dismiss();
@@ -96,12 +142,12 @@ public class Login extends Activity {
 	      }
 	    }.start();
 	  }
-	  
+
 	  protected String[] doLogin(String username, String password) {
 		  String consumer_key = TLConsumer.getSharedInstance().consumer_key;
 		  String consumer_secret = TLConsumer.getSharedInstance().consumer_secret;
 		  String access_token_url = "https://www.tumblr.com/oauth/access_token";
-			
+
 			HttpClient client = new DefaultHttpClient();
 			HttpPost request = new HttpPost(access_token_url);
 			CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(consumer_key, consumer_secret);
@@ -176,7 +222,7 @@ public class Login extends Activity {
 			    	}
 			    }
 		    }
-		    
+
 		    if (token != null && tokenKey != null) {
 		    	String ret[] = new String[2];
 		    	ret[0] = token;

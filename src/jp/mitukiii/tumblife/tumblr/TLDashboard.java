@@ -66,13 +66,15 @@ public class TLDashboard implements TLDashboardInterface, Serializable
     }
   }
 
-  protected static final String           HTTP_SCHEME       = "http://";
-  protected static final String           HTTPS_SCHEME      = "https://";
-  protected static final String           TUMBLR_URL        = "api.tumblr.com";
+  public static final String           HTTP_SCHEME       = "http://";
+  public static final String           HTTPS_SCHEME      = "https://";
+  public static final String           TUMBLR_URL        = "api.tumblr.com";
   //protected static final String           AUTH_URL          = "/api/authenticate";
   protected static final String           DASHBOARD_URL     = "/v2/user/dashboard";
   protected static final String           LIKE_URL          = "/v2/user/like";
-  protected static final String           REBLOG_URL        = "/api/reblog";
+
+//  protected static final String           REBLOG_URL        = "/api/reblog";
+  protected static final String           REBLOG_URL        = "/v2/blog/%s.tumblr.com/post/reblog";
   protected static final String           WRITE_URL         = "/api/write";
 
   protected static final String           DATA_NAME         = "dashboard.dat";
@@ -643,7 +645,7 @@ public class TLDashboard implements TLDashboardInterface, Serializable
           }
           progressHandler.sendMessage(message);
         }
-        if (pinPosts.isEmpty()) {      
+        if (pinPosts.isEmpty()) {
           handler.post(new Runnable() { public void run() { delegate.likeAllSuccess(); } });
         } else {
           handler.post(new Runnable() { public void run() { delegate.likeFailure(); } });
@@ -660,12 +662,14 @@ public class TLDashboard implements TLDashboardInterface, Serializable
     HttpURLConnection con = null;
     try {
       HashMap<String, String> parameters = getAccountParameters();
-      parameters.put("post-id", String.valueOf(post.getId()));
-      parameters.put("reblog-key", post.getReblogKey());
+      parameters.put("id", String.valueOf(post.getId()));
+      parameters.put("reblog_key", post.getReblogKey());
       if (comment != null && comment.length() > 0) {
         parameters.put("comment", comment);
       }
-      con = TLConnection.post(getTumblrUrl(REBLOG_URL), parameters, TLConsumer.getSharedInstance().getConsumer(this.context));
+      TLSetting setting = TLSetting.getSharedInstance(context);
+      setting.loadSetting(context);
+      con = TLConnection.post(String.format(getTumblrUrl(REBLOG_URL),setting.getReblogBlog()), parameters, TLConsumer.getSharedInstance().getConsumer(this.context));
       TLLog.i("TLDashboard / reblog : ResnponseCode / " + String.valueOf(con.getResponseCode()));
       if (con.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
         throw new TLAuthenticationFailureException();
@@ -720,7 +724,7 @@ public class TLDashboard implements TLDashboardInterface, Serializable
           }
           progressHandler.sendMessage(message);
         }
-        if (pinPosts.isEmpty()) {      
+        if (pinPosts.isEmpty()) {
           handler.post(new Runnable() { public void run() { delegate.reblogAllSuccess(); } });
         } else {
           handler.post(new Runnable() { public void run() { delegate.reblogAllFailure(); } });

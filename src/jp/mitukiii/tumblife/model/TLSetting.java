@@ -70,6 +70,7 @@ public class TLSetting extends TLModel
 
   protected String           token;
   protected String           tokenSecret;
+  protected String           reblogBlog;
   protected long             lastPostId;
 
   protected boolean          useSsl;
@@ -206,6 +207,8 @@ public class TLSetting extends TLModel
     keyCodePinButton = preferences.getInt(
         context.getString(R.string.hardkey_setting_pinbutton_key),
         KeyEvent.KEYCODE_UNKNOWN);
+
+    reblogBlog = preferences.getString(context.getString(R.string.setting_reblog_blog_key),"");
   }
 
   public String getToken()
@@ -217,7 +220,7 @@ public class TLSetting extends TLModel
   {
     return tokenSecret;
   }
-  
+
   public boolean setToken(Context context, String token, String secret) {
 	    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 	    Editor editor = preferences.edit();
@@ -337,5 +340,16 @@ public class TLSetting extends TLModel
   public int getKeyCodePinButton()
   {
     return keyCodePinButton;
+  }
+
+  public String getReblogBlog() {
+	  return reblogBlog;
+  }
+  public void saveReblogBlog(Context context,String newReblogBlog) {
+	  reblogBlog = newReblogBlog;
+	  SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+	  Editor editor = preferences.edit();
+	  editor.putString(context.getString(R.string.setting_reblog_blog_key), newReblogBlog);
+	  editor.commit();
   }
 }

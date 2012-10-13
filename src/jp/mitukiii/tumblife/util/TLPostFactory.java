@@ -10,7 +10,7 @@ import jp.mitukiii.tumblife.model.TLPost;
 import jp.mitukiii.tumblife.model.TLSetting;
 
 public class TLPostFactory
-{ 
+{
   protected static final int     SLEEP_TIME       = 1 * 1000;
   protected static final int     MAX_THREAD_COUNT = 3;
 
@@ -270,7 +270,7 @@ public class TLPostFactory
           makeHtmlFile(post);
         } catch (TLSDCardNotFoundException e) {
           TLLog.w("TLPostFactory / makePostFiles", e);
-          stop();
+          //stop();
         } catch (IOException e) {
           TLLog.w("TLPostFactory / makePostFiles", e);
         }

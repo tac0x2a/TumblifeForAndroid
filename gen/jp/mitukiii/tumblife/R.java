@@ -186,6 +186,7 @@ public final class R {
         public static final int setting_quickpost_key=0x7f040057;
         public static final int setting_quickpost_summary=0x7f040059;
         public static final int setting_quickpost_title=0x7f040058;
+        public static final int setting_reblog_blog_key=0x7f04009a;
         public static final int setting_savephotos_default=0x7f040072;
         public static final int setting_savephotos_key=0x7f04006f;
         public static final int setting_savephotos_summary=0x7f040071;
