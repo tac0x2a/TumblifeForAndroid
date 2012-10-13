@@ -66,9 +66,9 @@ public class TLDashboard implements TLDashboardInterface, Serializable
     }
   }
 
-  public static final String           HTTP_SCHEME       = "http://";
-  public static final String           HTTPS_SCHEME      = "https://";
-  public static final String           TUMBLR_URL        = "api.tumblr.com";
+  protected static final String           HTTP_SCHEME       = "http://";
+  protected static final String           HTTPS_SCHEME      = "https://";
+  protected static final String           TUMBLR_URL        = "api.tumblr.com";
   //protected static final String           AUTH_URL          = "/api/authenticate";
   protected static final String           DASHBOARD_URL     = "/v2/user/dashboard";
   protected static final String           LIKE_URL          = "/v2/user/like";
